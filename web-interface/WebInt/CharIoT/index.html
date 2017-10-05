@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<canvas id="myCanvas" width="2592" height="1944" style="border:1px solid #d3d3d3;">
+Your browser does not support the HTML5 canvas tag.</canvas>
+
+
+
+<form action="./read_config.php" method="post">
+Point 1 (x,y) top-left <input type="number" name="p1x" id="p1x" value="1"><input type="number" name="p1y" id="p1y" value="4"><br>
+Point 2 (x,y) top-right <input type="number" name="p2x" id="p2x" value="2"><input type="number" name="p2y" id="p2y" value="3"><br>
+Point 3 (x,y) botright<input type="number" name="p3x" id="p3x" value="3"><input type="number" name="p3y" id="p3y" value="2"><br>
+Point 4 (x,y) bot-left <input type="number" name="p4x" id="p4x" value="4"><input type="number" name="p4y" id="p4y" value="1"><br>
+<input type="submit" value="Submit"> (all points are automatically scaled) (assuming cartesian coordinates)
+</form>
+
+
+<button onclick="drawImg()">Draw image</button>
+<button onclick="drawSelected()">Draw selection</button>
+<br>
+<button onclick="updateRect()">Update selection</button>
+<button onclick="resetSelected()">Reset selection</button>
+<h3> Points should be selected in clockwise order from the top-left</h3>
+The order is: top-left -> top-right <br>
+                                           |<br>
+                                          v<br>
+							bottom-left	<-	bottom-right
+<script>
+
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+var nowPoints = 0;
+var arrPointsX = [0,0,0,0];
+var arrPointsY = [0,0,0,0];
+
+imgW = 2592;
+imgH = 1944;
+
+
+function scaleX(x){  return x*imgH/c.height  }
+function scaleY(y){	 return y*imgW/c.width	 }
+
+
+
+function drawImg(){
+	var imageObj = new Image();
+     	imageObj.onload = function() {
+        ctx.drawImage(imageObj, 0, 0);
+      };
+      imageObj.src = '2017-06-27_1215.jpg';
+
+}
+
+function updateRect() {
+
+	var x = document.getElementById("x").value;
+	var y = document.getElementById("y").value;
+	var w = document.getElementById("width").value;
+	var h = document.getElementById("height").value;
+
+    ctx.lineWidth="4";
+	ctx.strokeStyle="green";
+    ctx.rect(x, y, w, h);
+	ctx.stroke();
+}
+
+onmousedown = function(e){
+	x=e.clientX
+	y=e.clientY
+
+	y += window.scrollY
+	x += window.scrollX
+	x -= c.offsetLeft;
+  y -= c.offsetTop;
+	console.log("Mouse pressed at:", x,y);
+	if(nowPoints < 4){
+			ctx.fillRect(x,y,5,5);
+			arrPointsX[nowPoints]=x;
+			arrPointsY[nowPoints]=y;
+	}
+	nowPoints= nowPoints+1;
+
+}
+
+function drawSelected(){
+	if(nowPoints >= 4){
+		ctx.fillStyle = '#f00';
+		ctx.beginPath();
+		ctx.moveTo(arrPointsX[0], arrPointsY[0]);
+		ctx.lineTo(arrPointsX[1], arrPointsY[1]);
+		ctx.lineTo(arrPointsX[2], arrPointsY[2]);
+		ctx.lineTo(arrPointsX[3], arrPointsY[3]);
+		ctx.lineWidth = 1
+		ctx.closePath();
+		ctx.stroke();
+		updateSelection()
+	}
+}
+
+function resetSelected(){
+	arrPointsX = [0,0,0,0]
+	arrPointsY = [0,0,0,0]
+	nowPoints =0
+}
+
+function updateSelection(){
+	document.getElementById('p1x').value= scaleX(arrPointsX[0]) ;
+	document.getElementById('p2x').value= scaleX(arrPointsX[1] );
+	document.getElementById('p3x').value= scaleX(arrPointsX[2] );
+	document.getElementById('p4x').value= scaleX(arrPointsX[3] );
+
+	document.getElementById('p1y').value= scaleY(arrPointsY[0] );
+	document.getElementById('p2y').value= scaleY(arrPointsY[1] );
+	document.getElementById('p3y').value= scaleY(arrPointsY[2] );
+	document.getElementById('p4y').value= scaleY(arrPointsY[3] );
+
+}
+</script>
+
+</body>
+</html>

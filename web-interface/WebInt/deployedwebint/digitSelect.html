@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<body>
+	<div>
+<canvas id="myCanvas" width="1067" height="800" style="border:1px solid #d3d3d3;">
+Your browser does not support the HTML5 canvas tag.</canvas>
+</div>
+<div>
+
+
+<button onclick="drawImg()">Draw image</button>
+<button onclick="drawSelected()">Draw selection</button>
+<br>
+<button onclick="resetSelected()">Reset selection</button>
+<button onclick="createForm()">Create form</button>
+</div>
+<script>
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+var nowPoints = 0;
+var numDigits = 7;
+var arrPointsX = [];
+var arrPointsY = [];
+
+for(i =0 ; i< numDigits; i++){
+	arrPointsX[i] = new Array(4);
+	arrPointsY[i] = new Array(4);
+}
+
+var widthCanv = c.scrollWidth;
+var heightCanv = c.scrollHeight;
+
+imgW = 2592;
+imgH = 1944;
+
+function scaleX(x){  return x*imgH/heightCanv }
+function scaleY(y){	 return y*imgW/widthCanv	}
+
+function drawImg(){
+	var imageObj = new Image();
+     	imageObj.onload = function() {
+        ctx.drawImage(imageObj, 0, 0);
+      };
+      imageObj.src = 'outputs/warped.jpg';
+
+}
+
+function updateRect() {
+
+	var x = document.getElementById("x").value;
+	var y = document.getElementById("y").value;
+	var w = document.getElementById("width").value;
+	var h = document.getElementById("height").value;
+
+  ctx.lineWidth="4";
+	ctx.strokeStyle="green";
+    ctx.rect(x, y, w, h);
+	ctx.stroke();
+}
+
+onmousedown = function(e){
+	x=e.clientX
+	y=e.clientY
+
+	y += window.scrollY
+	x += window.scrollX
+	//x -= c.offsetLeft;
+        //y -= c.offsetTop;
+	console.log("Mouse pressed at:", x,y);
+	console.log(widthCanv, " ", heightCanv)
+	if( x< widthCanv && y < heightCanv){ //Check that click was in canvas confines
+		console.log("Adding element for digit ", parseInt(nowPoints/4), " of which this is bounding point ",nowPoints%4);
+		ctx.fillRect(x,y,5,5);
+		ctx.stroke();
+		arrPointsX[parseInt(nowPoints/4)][nowPoints%4]=x;
+		arrPointsY[parseInt(nowPoints/4)][nowPoints%4]=y;
+		nowPoints= nowPoints+1;
+	}
+
+}
+
+
+
+function drawSelected(){
+		ctx.fillStyle = '#f00';
+
+		ctx.lineWidth="3";
+		ctx.strokeStyle="green";
+
+		for(i=0; i< numDigits && i*4<=nowPoints;i++){
+			ctx.beginPath();
+			ctx.moveTo(arrPointsX[i][0], arrPointsY[i][0]);
+			ctx.lineTo(arrPointsX[i][1], arrPointsY[i][1]);
+			ctx.lineTo(arrPointsX[i][2], arrPointsY[i][2]);
+			ctx.lineTo(arrPointsX[i][3], arrPointsY[i][3]);
+			ctx.closePath();
+			ctx.stroke();
+		}
+
+		updateSelection()
+	}
+
+function resetSelected(){
+	for(i=0; i<numDigits;i++){
+		for(j=1;j<=4;j++){
+			arrPointsX[i][j]=0;
+			arrPointsY[i][j]=0
+		}
+	}
+	nowPoints =0
+	window.alert("Selection reset");
+}
+
+function updateSelection(){
+	for(i=0; i<numDigits && i*4<nowPoints;i++){
+		console.log("Updating point ",i);
+		nameArrX = [];
+		nameArrY = [];
+		for(j=1;j<=4;j++){
+			prefix = "d".concat(i);							//e.g. d2
+			suffixx = "p".concat(j).concat("x"); //e.g. p1x
+			suffixy = "p".concat(j).concat("y");
+			endStrX=  prefix.concat(suffixx);
+			endStrY=  prefix.concat(suffixy);
+
+			nameArrX.push(prefix.concat(suffixx));	//e.g. d2p1x
+			nameArrY.push(prefix.concat(suffixy));
+
+			//document.getElementById(endStrX).value = scaleX(arrPointsX[i][j-1]); //Zero indexing of points in array
+			//document.getElementById(endStrY).value = scaleY(arrPointsY[i][j-1]);
+			
+			//Unscaled initial image requiring unscaled points
+			document.getElementById(endStrX).value = arrPointsX[i][j-1]; //Zero indexing of points in array
+			document.getElementById(endStrY).value = arrPointsY[i][j-1];
+		}
+	}
+}
+
+//create a form
+
+function createForm()
+{var f = document.createElement("form");
+f.setAttribute('method',"post");
+f.setAttribute('action',"read_config_digit.php");
+
+
+for(i=0; i<numDigits;i++){
+	console.log("Creating form for digit ",i);
+	my_tb=document.createTextNode('Coordinates for digit '.concat(i));
+	f.appendChild(my_tb)
+
+	my_br = document.createElement("br");
+	f.appendChild(my_br)
+
+
+	nameArrX = [];
+	nameArrY = [];
+	for(j=1;j<=4;j++){
+		prefix = "d".concat(i);							//e.g. d2
+		suffixx = "p".concat(j).concat("x"); //e.g. p1x
+		suffixy = "p".concat(j).concat("y");
+
+		//Create identifier strings
+		endStrX=  prefix.concat(suffixx);
+		endStrY=  prefix.concat(suffixy);
+
+		//Create form element for X
+		var formX = document.createElement("input");
+		formX.type = "number";
+		formX.name = endStrX;
+		formX.id = endStrX;
+		f.appendChild(formX);
+
+		//Create form element for Y
+		var formY = document.createElement("input");
+		formY.type = "number";
+		formY.name = endStrY;
+		formY.id = endStrY;
+		f.appendChild(formY);
+
+		my_br = document.createElement("br");
+		f.appendChild(my_br)
+	}
+}
+
+//create a button
+var submitButton = document.createElement("input");
+submitButton.type = "submit";
+submitButton.value = "Submit";
+
+// add all elements to the form
+f.appendChild(submitButton);
+
+// add the form inside the body
+document.getElementsByTagName('body')[0].appendChild(f); //pure javascript
+}
+</script>
+<h4>Navigation</h4>
+<a href="index.html">Latest Image</a> | <a href="old-index.html">Region of Interest Selection </a> | <a href="digitSelect.html">Digit Selection</a> | <a href="currentReading.html">Currently read digits </a> | <a href="wifiControl.html">Change wifi configuration</a></body>
+
+
+</html>

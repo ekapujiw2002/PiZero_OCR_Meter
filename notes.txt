@@ -1,0 +1,77 @@
+----------OpenCV 3---------
+Python Tutorials
+http://docs.opencv.org/3.1.0/d6/d00/tutorial_py_root.html
+
+Checked samples for code for digit detection
+Tried code in digits.py and digits_video.py but it did not identify digits
+Turns out it was taking the wrong element given by the classfier
+
+On RPi0 use "workon cv" to get cv2 as an import
+To open windows on remote session:
+	xhost + (on remote machine)
+	export DISPLAY=:0 (on current shell)
+
+--------------------------
+
+----------Meters----------
+
+Assumptions (made on the 3 examples in Meter Pictures):
+- white digits on black background
+- some of the later digits might be on a red background
+- digits are all of same font
+- digits are arranged on a single line
+
+--------------------------
+
+----------MicroController----------
+Raspberry Pi Zero W(ireless)
+https://www.raspberrypi.org/products/pi-zero-w/
+
+OpenCV 			http://www.pyimagesearch.com/2015/10/26/how-to-install-opencv-3-on-raspbian-jessie/
+Remote Control Windows: https://askubuntu.com/questions/405916/open-a-window-in-a-remote-machine
+Boot time scripts:	https://www.cyberciti.biz/tips/linux-how-to-run-a-command-when-boots-up.html
+SSH over USB:		https://www.thepolyglotdeveloper.com/2016/06/connect-raspberry-pi-zero-usb-cable-ssh/
+
+Cron webcam tutorial:	https://www.raspberrypi.org/documentation/usage/webcams/
+Webcam specs:		https://www.raspberrypi.org/documentation/hardware/camera/
+
+Personal connect: 	torsocks ssh pi@ws63hi2fwixvmyed.onion
+Apache 2 Web server:	http://734z5yvdm5tz2an6.onion
+
+Possible troubleshooting links:
+https://stackoverflow.com/questions/2900690/how-do-i-give-php-write-access-to-a-directory
+https://stackoverflow.com/questions/8488253/how-to-force-cp-to-overwrite-without-confirmation
+https://digitalchild.info/raspberry-pi-failed-open-vchiq-instance-solved/
+
+Setup as AP:		https://learn.adafruit.com/setting-up-a-raspberry-pi-as-a-wifi-access-point/overview
+Let sudo script run w/o password: https://askubuntu.com/questions/167847/how-to-run-bash-script-as-root-with-no-password
+-------------------------
+
+
+----------Sensor----------
+DHT22 Temperature& Humidity Sensor
+https://learn.adafruit.com/dht
+
+
+ESP8266
+Arduino setup: https://learn.sparkfun.com/tutorials/esp8266-thing-hookup-guide/installing-the-esp8266-arduino-addon
+When flashing, hold down both buttons, then let go of upper button
+
+For new sensor PIR, make sure jumper is put back (one pin in front of it unused), also both settings turned far-right
+-------------------------
+
+----------Server----------
+http://185.157.234.235:8083/  InfluxDB server
+login:	malik
+passwd: wildeyes
+
+Select "chariot" databse
+Example query: select * from SensorDataPIR ORDER BY DESC LIMIT 10
+--------------------------
+
+
+----------TensorFlow---------------
+MNIST convolutional classfier tutorial: 	https://www.tensorflow.org/get_started/mnist/pros
+How to extract prediction from trained model: 	https://stackoverflow.com/questions/33711556/making-predictions-with-a-tensorflow-model
+Saving and restoring variables:			https://www.tensorflow.org/programmers_guide/variables
+--------------------------

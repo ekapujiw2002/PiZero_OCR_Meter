@@ -1,0 +1,22 @@
+<html>
+<body>
+
+<h2> Wifi setup page </h2>
+<!--Done as a proof of concept, please do not actually use this-->
+<form action="./update_connection.php" method="post">
+
+Name <input type="text" name="user" 		id="user" 	placeholder="Test-SSID"><br>
+Pass <input type="text" name="password" 	id="password" 	placeholder="hunter2"><br>
+<input type="submit" value="Submit"><br>
+</form>
+
+<form action="./update_pi_network_mode.php" method="post">
+<input type="hidden" name=toMode" value="client">
+<input type="submit" value="Restart to connect to configured Wi-fi"><br>
+
+<form action="./update_pi_network.php" method="post">
+<input type="hidden" name="toMode" value="host">
+<input type="submit" value="Restart as Wi-fi access points"><br>
+
+</body>
+</html>

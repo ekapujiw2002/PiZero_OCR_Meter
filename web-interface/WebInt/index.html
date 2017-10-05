@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<canvas id="myCanvas" width="1067" height="800" style="border:1px solid #d3d3d3;">
+Your browser does not support the HTML5 canvas tag.</canvas>
+<br>
+<button onclick="drawImg()">Show latest automatically taken image</button>
+<button onclick="drawImgCurrent()">Show latest manually taken image</button>
+<form action="./takeImage.php" method="post">
+<input type="submit" value="Take new image"> (Will refresh the page)
+</form>
+Browser may cache the image,<br>
+So here is an alternative <a href="latestManual.jpg"> direct link </a>  <br>
+
+<script>
+
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+var nowPoints = 0;
+var arrPointsX = [0,0,0,0];
+var arrPointsY = [0,0,0,0];
+
+imgW = 2592;
+imgH = 1944;
+
+heightCanv =  c.height;
+widthCanv = c.width;
+
+
+var imageObj = new Image();
+imageObj.onload = function() {
+        ctx.drawImage(imageObj, 0, 0, widthCanv,heightCanv);
+      	};
+function drawImg(){
+      imageObj.src = 'latest.jpg' + "?time=" + (new Date()).getTime();
+}
+
+function drawImgCurrent(){
+	imageObj.src= 'latestManual.jpg' + "?time=" + (new Date()).getTime();
+}
+
+</script>
+<br> <a href="index.html">Image Control </a> | <a href="roiSelection.html">Region of Interest Selection </a> | <a href="digitSelect.html">Digit Selection</a> | <a href="currentReading.html">Currently read digits </a> | <a href="wifiControl.html">Change wifi configuration</a>
+</body>
+</html>
